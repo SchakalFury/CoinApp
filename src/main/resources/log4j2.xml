@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <SMTP name="EMAIL" subject="MyApp Log" to="${sys:mail.receiver}"
+              from="${sys:mail.sender}" smtpHost="${sys:mail.host}" smtpPort="${sys:mail.port}"
+              smtpUsername="${sys:mail.username}" smtpPassword="${sys:mail.password}">
+            <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout>
+                <pattern>%d %level [%t] %logger{10} [%F:%L] %msg%n</pattern>
+            </PatternLayout>
+        </SMTP>
+        <RollingFile name="FILE" fileName="logs/myapp.log"
+                     filePattern="logs/myapp-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <pattern>%d %level [%t] %logger{10} [%F:%L] %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+            <Filters>
+                <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="ERROR">
+            <AppenderRef ref="EMAIL"/>
+            <AppenderRef ref="FILE"/>
+        </Root>
+    </Loggers>
+</Configuration>
