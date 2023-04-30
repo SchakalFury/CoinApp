@@ -1,6 +1,5 @@
 package com.example.CoinApp;
 
-import com.example.CoinApp.config.AppConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
