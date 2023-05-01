@@ -4,6 +4,10 @@ import com.example.CoinApp.dto.UserDTO;
 import com.example.CoinApp.models.User;
 import com.example.CoinApp.models.UserRole;
 import com.example.CoinApp.repositories.UserRepository;
+import com.example.CoinApp.utils.UtilClasses.UserValidator;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,12 +19,16 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@Slf4j
 public class UserService {
-
+    private final Logger logger = LoggerFactory.getLogger(UserService.class);
+    private UserValidator userValidator;
     private final UserRepository userRepository;
     @Autowired
     public UserService(UserRepository userRepository) {
+
         this.userRepository = userRepository;
+
     }
 
     public List<UserDTO> findAll() {
@@ -37,6 +45,11 @@ public class UserService {
 
     public UserDTO save(UserDTO userDTO) {
         User user = userDTO.toEntity();
+//        userValidator.validatePassword(userDTO.getPassword());   ОБРАБОТАТЬ ОТСУТСТВИЕ ПАРОЛЯ БЛЯТЬ!!!
+//        userValidator.validateUsername(userDTO.getUsername());
+//        userValidator.validateEmail(userDTO.getEmail());
+//        userValidator.validateCountryOfResidence(userDTO.getCountryOfResidence());
+
         User savedUser = userRepository.save(user);
         return UserDTO.fromEntity(savedUser);
     }
@@ -46,13 +59,20 @@ public class UserService {
         if (userOptional.isPresent()) {
             User user = userDTO.toEntity();
             User updatedUser = userRepository.save(user);
+//            userValidator.validateUsername(userDTO.getUsername());
+//            userValidator.validateEmail(userDTO.getEmail());
+//            userValidator.validateCountryOfResidence(userDTO.getCountryOfResidence());
             return UserDTO.fromEntity(updatedUser);
+        } else {
+            logger.error("User with id={} not found, update failed", userDTO.getId());
+            throw new RuntimeException("User not found");
         }
-        return null;
     }
 
     public void deleteById(Long id) {
+
         userRepository.deleteById(id);
+        logger.warn("User with ID {} has been deleted", id);
     }
 
     public List<UserDTO> findByUserRole(UserRole userRole) {

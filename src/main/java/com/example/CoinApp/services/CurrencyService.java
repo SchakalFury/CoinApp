@@ -6,6 +6,9 @@ import com.example.CoinApp.models.Currency;
 import com.example.CoinApp.models.CurrencyPrice;
 import com.example.CoinApp.repositories.CurrencyPriceRepository;
 import com.example.CoinApp.repositories.CurrencyRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +19,12 @@ import java.util.stream.Collectors;
 
 @Transactional
 @Service
+@Slf4j
 public class CurrencyService {
     @Autowired
     private final CurrencyRepository currencyRepository;
     private final CurrencyPriceRepository currencyPriceRepository;
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(CurrencyService.class);
     public CurrencyService(CurrencyRepository currencyRepository, CurrencyPriceRepository currencyPriceRepository) {
         this.currencyRepository = currencyRepository;
         this.currencyPriceRepository = currencyPriceRepository;
@@ -35,6 +39,7 @@ public class CurrencyService {
 
 
     public void deleteCurrencyBySymbol(String symbol) {
+        LOGGER.info("Removing currency with symbol {}", symbol);
         currencyRepository.deleteBySymbol(symbol);
     }
 

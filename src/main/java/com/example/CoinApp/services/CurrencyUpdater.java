@@ -8,6 +8,7 @@ import com.example.CoinApp.repositories.CurrencyRepository;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -23,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
+@Slf4j
 @Service
 @Component
 @PropertySource("classpath:application.properties")
@@ -45,7 +46,7 @@ public class CurrencyUpdater {
 
     @Scheduled(cron = "0 0 * * * *")
     public void updateCurrencies() {
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        try { ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(response.getBody(), JsonObject.class);
@@ -69,10 +70,14 @@ public class CurrencyUpdater {
                 currencyRepository.save(currency);
             }
         }
+    }catch (Exception e) {
+            log.error("An error occurred while updating currencies: ", e);
+        }
     }
 
     @Scheduled(cron = "0 0 23 * * *")
     public void addCurrencyPrices() {
+        try {
         List<Currency> currencies = currencyRepository.findAll();
         Date currentDate = new Date();
 
@@ -87,12 +92,19 @@ public class CurrencyUpdater {
 
             currencyPriceRepository.save(currencyPrice);
         }
+    }  catch (Exception e) {
+        log.error("An error occurred while adding currency prices: ", e);
     }
+}
 
     @Scheduled(cron = "0 0 0 1 1 ?")
     public void deleteOldCurrencyPrices() {
+        try {
         LocalDate oneYearAgo = LocalDate.now().minusYears(1).plusDays(1); // год и один день назад
         List<CurrencyPrice> oldPrices = currencyPriceRepository.findByDateWriteBefore(oneYearAgo);
         currencyPriceRepository.deleteAll(oldPrices);
+    }catch (Exception e) {
+            log.error("An error occurred while deleting old currency prices: ", e);
+        }
     }
 }
