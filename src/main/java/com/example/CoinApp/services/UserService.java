@@ -1,6 +1,7 @@
 package com.example.CoinApp.services;
 
 import com.example.CoinApp.dto.UserDTO;
+import com.example.CoinApp.models.Currency;
 import com.example.CoinApp.models.User;
 import com.example.CoinApp.models.UserRole;
 import com.example.CoinApp.repositories.UserRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,8 +28,8 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
-
+    public UserService(UserRepository userRepository, UserValidator userValidator) {
+        this.userValidator = userValidator;
         this.userRepository = userRepository;
 
     }
@@ -44,18 +46,20 @@ public class UserService {
         return userOptional.map(UserDTO::fromEntity);
     }
 
-    public UserDTO save(UserDTO userDTO) {
+    public void save(UserDTO userDTO) {
         userValidator.validateUsername(userDTO.getUsername());
         userValidator.validateEmail(userDTO.getEmail());
         userValidator.validatePassword(userDTO.getPassword(), userDTO.getUsername());
         userValidator.validateCountryOfResidence(userDTO.getCountryOfResidence());
 
+        if (userDTO.getCurrencies() == null) {
+            userDTO.setCurrencies(new ArrayList<>());
+        }
+
         User user = userDTO.toEntity();
 
         User savedUser = userRepository.save(user);
-        return UserDTO.fromEntity(savedUser);
     }
-
     public UserDTO update(UserDTO userDTO) {
         userValidator.validateUsername(userDTO.getUsername());
         userValidator.validateEmail(userDTO.getEmail());

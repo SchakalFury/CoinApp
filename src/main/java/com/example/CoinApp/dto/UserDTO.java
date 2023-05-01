@@ -25,7 +25,7 @@ public class UserDTO {
     private LocalDate registrationDate;
     private String countryOfResidence;
     private UserRole userRole;
-    private List<CurrencyDTO> currencies;
+    private List<CurrencyDTO> currencies = null;;
 
 
 
