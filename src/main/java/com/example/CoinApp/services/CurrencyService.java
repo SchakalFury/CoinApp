@@ -44,24 +44,5 @@ public class CurrencyService {
     }
 
 
-    public List<CurrencyPriceDTO> findCurrencyPricesBySymbolAndDateWriteBetween(String symbol, LocalDate start, LocalDate end) {
-        List<CurrencyPrice> currencyPrices = currencyPriceRepository.findAllBySymbolAndDateWriteBetweenOrderByDateWrite(symbol, start, end);
-        return currencyPrices.stream()
-                .map(CurrencyPriceDTO::from)
-                .collect(Collectors.toList());
-    }
 
-    public List<CurrencyPriceDTO> findCurrencyPricesBySymbolAndDateWriteBetweenAndPriceDayNotNull(String symbol, LocalDate start, LocalDate end) {
-        List<CurrencyPrice> currencyPrices = currencyPriceRepository.findAllBySymbolAndDateWriteBetweenAndPriceDayNotNullOrderByDateWrite(symbol, start, end);
-        return currencyPrices.stream()
-                .map(CurrencyPriceDTO::from)
-                .collect(Collectors.toList());
-    }
-
-    public List<CurrencyPriceDTO> findCurrencyPricesBySymbolAndDateWriteBetweenAndPriceDayIsNull(String symbol, LocalDate start, LocalDate end) {
-        List<CurrencyPrice> currencyPrices = currencyPriceRepository.findAllBySymbolAndDateWriteBetweenAndPriceDayIsNullOrderByDateWrite(symbol, start, end);
-        return currencyPrices.stream()
-                .map(CurrencyPriceDTO::from)
-                .collect(Collectors.toList());
-    }
 }

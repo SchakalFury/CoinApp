@@ -24,6 +24,7 @@ public class UserService {
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
     private UserValidator userValidator;
     private final UserRepository userRepository;
+
     @Autowired
     public UserService(UserRepository userRepository) {
 
@@ -44,76 +45,82 @@ public class UserService {
     }
 
     public UserDTO save(UserDTO userDTO) {
+        userValidator.validateUsername(userDTO.getUsername());
+        userValidator.validateEmail(userDTO.getEmail());
+        userValidator.validatePassword(userDTO.getPassword(), userDTO.getUsername());
+        userValidator.validateCountryOfResidence(userDTO.getCountryOfResidence());
+
         User user = userDTO.toEntity();
-//        userValidator.validatePassword(userDTO.getPassword());   ОБРАБОТАТЬ ОТСУТСТВИЕ ПАРОЛЯ БЛЯТЬ!!!
-//        userValidator.validateUsername(userDTO.getUsername());
-//        userValidator.validateEmail(userDTO.getEmail());
-//        userValidator.validateCountryOfResidence(userDTO.getCountryOfResidence());
 
         User savedUser = userRepository.save(user);
         return UserDTO.fromEntity(savedUser);
     }
 
     public UserDTO update(UserDTO userDTO) {
+        userValidator.validateUsername(userDTO.getUsername());
+        userValidator.validateEmail(userDTO.getEmail());
+        userValidator.validatePassword(userDTO.getPassword(), userDTO.getUsername());
+        userValidator.validateCountryOfResidence(userDTO.getCountryOfResidence());
+
         Optional<User> userOptional = userRepository.findById(userDTO.getId());
         if (userOptional.isPresent()) {
             User user = userDTO.toEntity();
             User updatedUser = userRepository.save(user);
-//            userValidator.validateUsername(userDTO.getUsername());
-//            userValidator.validateEmail(userDTO.getEmail());
-//            userValidator.validateCountryOfResidence(userDTO.getCountryOfResidence());
+
             return UserDTO.fromEntity(updatedUser);
         } else {
             logger.error("User with id={} not found, update failed", userDTO.getId());
             throw new RuntimeException("User not found");
         }
+
     }
 
-    public void deleteById(Long id) {
+        public void deleteById (Long id){
 
-        userRepository.deleteById(id);
-        logger.warn("User with ID {} has been deleted", id);
+            userRepository.deleteById(id);
+            logger.warn("User with ID {} has been deleted", id);
+        }
+
+        public List<UserDTO> findByUserRole (UserRole userRole){
+            List<User> users = userRepository.findByUserRole(userRole);
+            return users.stream()
+                    .map(UserDTO::fromEntity)
+                    .collect(Collectors.toList());
+        }
+
+        public List<UserDTO> findByRegistrationDateBetween (LocalDate start, LocalDate end){
+            List<User> users = userRepository.findByRegistrationDateBetween(start, end);
+            return users.stream()
+                    .map(UserDTO::fromEntity)
+                    .collect(Collectors.toList());
+        }
+
+        public List<UserDTO> findByEmailContainingIgnoreCase (String email){
+            List<User> users = userRepository.findByEmailContainingIgnoreCase(email);
+            return users.stream()
+                    .map(UserDTO::fromEntity)
+                    .collect(Collectors.toList());
+        }
+
+        public List<UserDTO> findByCountryOfResidence (String country){
+            List<User> users = userRepository.findByCountryOfResidence(country);
+            return users.stream()
+                    .map(UserDTO::fromEntity)
+                    .collect(Collectors.toList());
+        }
+
+        public List<UserDTO> findByUsernameContainingIgnoreCase (String username){
+            List<User> users = userRepository.findByUsernameContainingIgnoreCase(username);
+            return users.stream()
+                    .map(UserDTO::fromEntity)
+                    .collect(Collectors.toList());
+        }
+
+        public List<UserDTO> findByUsernameOrEmailContainingIgnoreCase (String username, String email){
+            List<User> users = userRepository.findByUsernameOrEmailContainingIgnoreCase(username, email);
+            return users.stream()
+                    .map(UserDTO::fromEntity)
+                    .collect(Collectors.toList());
+        }
     }
 
-    public List<UserDTO> findByUserRole(UserRole userRole) {
-        List<User> users = userRepository.findByUserRole(userRole);
-        return users.stream()
-                .map(UserDTO::fromEntity)
-                .collect(Collectors.toList());
-    }
-
-    public List<UserDTO> findByRegistrationDateBetween(LocalDate start, LocalDate end) {
-        List<User> users = userRepository.findByRegistrationDateBetween(start, end);
-        return users.stream()
-                .map(UserDTO::fromEntity)
-                .collect(Collectors.toList());
-    }
-
-    public List<UserDTO> findByEmailContainingIgnoreCase(String email) {
-        List<User> users = userRepository.findByEmailContainingIgnoreCase(email);
-        return users.stream()
-                .map(UserDTO::fromEntity)
-                .collect(Collectors.toList());
-    }
-
-    public List<UserDTO> findByCountryOfResidence(String country) {
-        List<User> users = userRepository.findByCountryOfResidence(country);
-        return users.stream()
-                .map(UserDTO::fromEntity)
-                .collect(Collectors.toList());
-    }
-
-    public List<UserDTO> findByUsernameContainingIgnoreCase(String username) {
-        List<User> users = userRepository.findByUsernameContainingIgnoreCase(username);
-        return users.stream()
-                .map(UserDTO::fromEntity)
-                .collect(Collectors.toList());
-    }
-
-    public List<UserDTO> findByUsernameOrEmailContainingIgnoreCase(String username, String email) {
-        List<User> users = userRepository.findByUsernameOrEmailContainingIgnoreCase(username, email);
-        return users.stream()
-                .map(UserDTO::fromEntity)
-                .collect(Collectors.toList());
-    }
-}

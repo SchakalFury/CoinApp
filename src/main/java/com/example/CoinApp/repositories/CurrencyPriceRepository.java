@@ -9,9 +9,6 @@ import java.util.List;
 
 @Repository
 public interface CurrencyPriceRepository extends JpaRepository<CurrencyPrice, Long> {
-    List<CurrencyPrice> findAllBySymbolAndDateWriteBetweenOrderByDateWrite(String symbol, LocalDate start, LocalDate end);
-    List<CurrencyPrice> findAllBySymbolAndDateWriteBetweenAndPriceDayNotNullOrderByDateWrite(String symbol, LocalDate start, LocalDate end);
-    List<CurrencyPrice> findAllBySymbolAndDateWriteBetweenAndPriceDayIsNullOrderByDateWrite(String symbol, LocalDate start, LocalDate end);
 
     List<CurrencyPrice> findByDateWriteBefore(LocalDate oneYearAgo);
 }

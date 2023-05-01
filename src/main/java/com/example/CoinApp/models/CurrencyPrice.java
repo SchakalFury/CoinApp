@@ -27,6 +27,6 @@ public class CurrencyPrice {
     private Date dateWrite;
 
     @ManyToOne
-    @JoinColumn(name = "symbol", referencedColumnName = "symbol")
+    @JoinColumn(name = "currency_id", referencedColumnName = "id")
     private Currency currency;
 }
