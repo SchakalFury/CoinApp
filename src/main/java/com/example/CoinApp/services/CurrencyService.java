@@ -43,6 +43,13 @@ public class CurrencyService {
         currencyRepository.deleteBySymbol(symbol);
     }
 
+    public List<String> getAllCurrencySymbols() {
+        List<Currency> currencies = currencyRepository.findAll();
+        return currencies.stream()
+                .map(Currency::getSymbol)
+                .collect(Collectors.toList());
+    }
+
 
 
 }

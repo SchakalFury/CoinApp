@@ -11,4 +11,6 @@ public interface CurrencyRepository extends JpaRepository<Currency, Long> {
     List<Currency> findAllBySymbolIn(List<String> symbols);
 
     void deleteBySymbol(String symbol);
+
+    Currency findBySymbol(String symbol);
 }
