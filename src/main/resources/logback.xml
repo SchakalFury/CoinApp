@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+        <smtpHost>smtp.gmail.com</smtpHost>
+        <smtpPort>587</smtpPort>
+        <STARTTLS>true</STARTTLS>
+        <username>your_username</username>
+        <password>your_password</password>
+        <to>recipient@example.com</to>
+        <from>sender@example.com</from>
+        <subject>Logback Error Notification</subject>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%logger{0} - %msg%n[%thread] [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%C.%M]</pattern>
+        </layout>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="EMAIL" />
+    </root>
+
+</configuration>

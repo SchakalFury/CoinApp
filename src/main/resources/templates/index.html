@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Online Store</title>
+</head>
+<body>
+<h1>Welcome to My Online Store</h1>
+<p>Here are our latest products:</p>
+
+<ul>
+    <li th:each="symbol : ${currencies}" th:text="${symbol}"></li>
+</ul>
+
+</body>
+</html>
