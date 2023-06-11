@@ -1,9 +1,9 @@
 package com.example.CoinApp.services;
 
 import com.example.CoinApp.dto.CurrencyDTO;
-import com.example.CoinApp.dto.CurrencyPriceDTO;
+
 import com.example.CoinApp.models.Currency;
-import com.example.CoinApp.models.CurrencyPrice;
+
 import com.example.CoinApp.repositories.CurrencyPriceRepository;
 import com.example.CoinApp.repositories.CurrencyRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -13,14 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
+
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 @Transactional
 @Service
 @Slf4j
 public class CurrencyService {
+
     @Autowired
     private final CurrencyRepository currencyRepository;
     private final CurrencyPriceRepository currencyPriceRepository;
@@ -28,6 +31,11 @@ public class CurrencyService {
     public CurrencyService(CurrencyRepository currencyRepository, CurrencyPriceRepository currencyPriceRepository) {
         this.currencyRepository = currencyRepository;
         this.currencyPriceRepository = currencyPriceRepository;
+    }
+
+    public Optional<CurrencyDTO> findById(Long id) {
+        Optional<Currency> currencyOptional = currencyRepository.findById(id);
+        return currencyOptional.map(CurrencyDTO::from);
     }
 
     public List<CurrencyDTO> getCurrenciesBySymbols(List<String> symbols) {
