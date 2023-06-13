@@ -23,44 +23,42 @@ public class CurrencyDTO {
     private String description;
     private BigDecimal price;
     private Date createdAt;
-    private List<UserDTO> users;
     private List<CurrencyPriceDTO> prices;
+    private List<UserDTO> users;
 
-
-    public static CurrencyDTO from(Currency currency) {
-        List<CurrencyPriceDTO> prices = currency.getPrices().stream()
-                .map(CurrencyPriceDTO::from)
+    public static List<CurrencyDTO> fromEntities(List<Currency> currencies) {
+        return currencies.stream()
+                .map(CurrencyDTO::fromEntity)
                 .collect(Collectors.toList());
-        List<UserDTO> users = currency.getUsers().stream()
-                .map(UserDTO::fromEntity)
-                .collect(Collectors.toList());
-        return CurrencyDTO.builder()
-                .id(currency.getId())
-                .symbol(currency.getSymbol())
-                .description(currency.getDescription())
-                .price(currency.getPrice())
-                .createdAt(currency.getCreatedAt())
-                .prices(prices)
-                .users(users)
-                .build();
     }
 
-    public Currency toCurrency() {
-        Currency currency = Currency.builder()
-                .id(getId())
-                .symbol(getSymbol())
-                .description(getDescription())
-                .price(getPrice())
-                .createdAt(getCreatedAt())
-                .build();
-        List<CurrencyPrice> prices = getPrices().stream()
-                .map(CurrencyPriceDTO::to)
+    public static CurrencyDTO fromEntity(Currency currency) {
+        CurrencyDTO currencyDTO = new CurrencyDTO();
+        currencyDTO.setId(currency.getId());
+        currencyDTO.setSymbol(currency.getSymbol());
+        currencyDTO.setDescription(currency.getDescription());
+        currencyDTO.setPrice(currency.getPrice());
+        currencyDTO.setCreatedAt(currency.getCreatedAt());
+        currencyDTO.setPrices(CurrencyPriceDTO.fromEntities(currency.getPrices()));
+        currencyDTO.setUsers(UserDTO.fromEntities(currency.getUsers()));
+        return currencyDTO;
+    }
+
+    public static List<Currency> toEntities(List<CurrencyDTO> currencyDTOs) {
+        return currencyDTOs.stream()
+                .map(CurrencyDTO::toEntity)
                 .collect(Collectors.toList());
-        currency.setPrices(prices);
-        List<User> users = getUsers().stream()
-                .map(UserDTO::toEntity)
-                .collect(Collectors.toList());
-        currency.setUsers(users);
+    }
+
+    public static Currency toEntity(CurrencyDTO currencyDTO) {
+        Currency currency = new Currency();
+        currency.setId(currencyDTO.getId());
+        currency.setSymbol(currencyDTO.getSymbol());
+        currency.setDescription(currencyDTO.getDescription());
+        currency.setPrice(currencyDTO.getPrice());
+        currency.setCreatedAt(currencyDTO.getCreatedAt());
+        currency.setPrices(CurrencyPriceDTO.toEntities(currencyDTO.getPrices()));
+        currency.setUsers(UserDTO.toEntities(currencyDTO.getUsers()));
         return currency;
     }
 }

@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -18,27 +20,35 @@ public class CurrencyPriceDTO {
     private Long id;
     private BigDecimal priceDay;
     private Date dateWrite;
-    private String currencySymbol;
+    private CurrencyDTO currency;
 
-
-    public static CurrencyPriceDTO from(CurrencyPrice currencyPrice) {
-        return CurrencyPriceDTO.builder()
-                .id(currencyPrice.getId())
-                .priceDay(currencyPrice.getPriceDay())
-                .dateWrite(currencyPrice.getDateWrite())
-                .currencySymbol(currencyPrice.getCurrency().getSymbol())
-                .build();
+    public static List<CurrencyPriceDTO> fromEntities(List<CurrencyPrice> currencyPrices) {
+        return currencyPrices.stream()
+                .map(CurrencyPriceDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    public CurrencyPrice to() {
-        CurrencyPrice currencyPrice = CurrencyPrice.builder()
-                .id(getId())
-                .priceDay(getPriceDay())
-                .dateWrite(getDateWrite())
-                .build();
-        Currency currency = new Currency();
-        currency.setSymbol(getCurrencySymbol());
-        currencyPrice.setCurrency(currency);
+    public static CurrencyPriceDTO fromEntity(CurrencyPrice currencyPrice) {
+        CurrencyPriceDTO currencyPriceDTO = new CurrencyPriceDTO();
+        currencyPriceDTO.setId(currencyPrice.getId());
+        currencyPriceDTO.setPriceDay(currencyPrice.getPriceDay());
+        currencyPriceDTO.setDateWrite(currencyPrice.getDateWrite());
+        currencyPriceDTO.setCurrency(CurrencyDTO.fromEntity(currencyPrice.getCurrency()));
+        return currencyPriceDTO;
+    }
+
+    public static List<CurrencyPrice> toEntities(List<CurrencyPriceDTO> currencyPriceDTOs) {
+        return currencyPriceDTOs.stream()
+                .map(CurrencyPriceDTO::toEntity)
+                .collect(Collectors.toList());
+    }
+
+    public static CurrencyPrice toEntity(CurrencyPriceDTO currencyPriceDTO) {
+        CurrencyPrice currencyPrice = new CurrencyPrice();
+        currencyPrice.setId(currencyPriceDTO.getId());
+        currencyPrice.setPriceDay(currencyPriceDTO.getPriceDay());
+        currencyPrice.setDateWrite(currencyPriceDTO.getDateWrite());
+        currencyPrice.setCurrency(CurrencyDTO.toEntity(currencyPriceDTO.getCurrency()));
         return currencyPrice;
     }
 }

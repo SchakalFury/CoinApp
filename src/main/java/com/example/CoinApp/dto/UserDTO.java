@@ -19,51 +19,55 @@ import java.util.stream.Collectors;
 public class UserDTO {
     private Long id;
     private String username;
-    private String email;
     private String password;
+    private String email;
     private boolean isEnabled;
     private LocalDate registrationDate;
     private String countryOfResidence;
     private UserRole userRole;
-    private List<CurrencyDTO> currencies = null;;
-
-
+    private List<CurrencyDTO> currencies;
 
 
 
     public static UserDTO fromEntity(User user) {
-        List<CurrencyDTO> currencyDtos = user.getCurrencies().stream()
-                .map(CurrencyDTO::from)
-                .collect(Collectors.toList());
-
-        return UserDTO.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .isEnabled(user.isEnabled())
-                .registrationDate(user.getRegistrationDate())
-                .countryOfResidence(user.getCountryOfResidence())
-                .userRole(user.getUserRole())
-                .currencies(currencyDtos)
-                .build();
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setPassword(user.getPassword());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setEnabled(user.isEnabled());
+        userDTO.setRegistrationDate(user.getRegistrationDate());
+        userDTO.setCountryOfResidence(user.getCountryOfResidence());
+        userDTO.setUserRole(user.getUserRole());
+        userDTO.setCurrencies(CurrencyDTO.fromEntities(user.getCurrencies()));
+        return userDTO;
     }
 
     public User toEntity() {
-        List<Currency> currencies = this.getCurrencies().stream()
-                .map(CurrencyDTO::toCurrency)
-                .collect(Collectors.toList());
+        User user = new User();
+        user.setId(this.getId());
+        user.setUsername(this.getUsername());
+        user.setPassword(this.getPassword());
+        user.setEmail(this.getEmail());
+        user.setEnabled(this.isEnabled());
+        user.setRegistrationDate(this.getRegistrationDate());
+        user.setCountryOfResidence(this.getCountryOfResidence());
+        user.setUserRole(this.getUserRole());
+        user.setCurrencies(CurrencyDTO.toEntities(this.getCurrencies()));
+        return user;
+    }
 
-        return User.builder()
-                .id(this.getId())
-                .username(this.getUsername())
-                .email(this.getEmail())
-                .password(this.getPassword())
-                .isEnabled(this.isEnabled())
-                .registrationDate(this.getRegistrationDate())
-                .countryOfResidence(this.getCountryOfResidence())
-                .userRole(this.getUserRole())
-                .currencies(currencies)
-                .build();
+    public static List<User> toEntities(List<UserDTO> userDTOs) {
+        return userDTOs.stream()
+                .map(UserDTO::toEntity)
+                .collect(Collectors.toList());
+    }
+
+    public static List<UserDTO> fromEntities(List<User> users) {
+        return users.stream()
+                .map(UserDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 }
+
+

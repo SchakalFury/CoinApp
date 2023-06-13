@@ -24,10 +24,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CurrencyService {
 
-    @Autowired
     private final CurrencyRepository currencyRepository;
     private final CurrencyPriceRepository currencyPriceRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(CurrencyService.class);
+
     public CurrencyService(CurrencyRepository currencyRepository, CurrencyPriceRepository currencyPriceRepository) {
         this.currencyRepository = currencyRepository;
         this.currencyPriceRepository = currencyPriceRepository;
@@ -35,16 +35,13 @@ public class CurrencyService {
 
     public Optional<CurrencyDTO> findById(Long id) {
         Optional<Currency> currencyOptional = currencyRepository.findById(id);
-        return currencyOptional.map(CurrencyDTO::from);
+        return currencyOptional.map(CurrencyDTO::fromEntity);
     }
 
     public List<CurrencyDTO> getCurrenciesBySymbols(List<String> symbols) {
         List<Currency> currencies = currencyRepository.findAllBySymbolIn(symbols);
-        return currencies.stream()
-                .map(CurrencyDTO::from)
-                .collect(Collectors.toList());
+        return CurrencyDTO.fromEntities(currencies);
     }
-
 
     public void deleteCurrencyBySymbol(String symbol) {
         LOGGER.info("Removing currency with symbol {}", symbol);
@@ -57,7 +54,6 @@ public class CurrencyService {
                 .map(Currency::getSymbol)
                 .collect(Collectors.toList());
     }
-
-
-
 }
+
+
