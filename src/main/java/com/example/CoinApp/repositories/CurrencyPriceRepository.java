@@ -15,4 +15,6 @@ public interface CurrencyPriceRepository extends JpaRepository<CurrencyPrice, Lo
     List<CurrencyPrice> findByDateWriteBefore(LocalDate oneYearAgo);
 
     List<CurrencyPrice> findByCurrencySymbolAndDateWriteBetween(String currencySymbol, LocalDateTime startDate, LocalDateTime endDate);
+
+    int deleteByCreatedAtBefore(LocalDateTime thresholdDate);
 }

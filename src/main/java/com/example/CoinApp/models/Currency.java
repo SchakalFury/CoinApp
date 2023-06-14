@@ -24,7 +24,7 @@ public class Currency {
     @Column(nullable = false, unique = true)
     private String symbol;
 
-    @Column(nullable = false)
+    @Column
     private String description;
 
     @Column(nullable = false)
