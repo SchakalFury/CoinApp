@@ -2,13 +2,15 @@ package com.example.CoinApp.services;
 
 import com.example.CoinApp.dto.CurrencyDTO;
 
-import com.example.CoinApp.models.Currency;
 
+import com.example.CoinApp.models.Currency;
 import com.example.CoinApp.repositories.CurrencyPriceRepository;
 import com.example.CoinApp.repositories.CurrencyRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+
 
 import org.springframework.stereotype.Service;
 
@@ -25,10 +27,11 @@ import java.util.stream.Collectors;
 public class CurrencyService {
 
     private final CurrencyRepository currencyRepository;
+
     private final CurrencyPriceRepository currencyPriceRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(CurrencyService.class);
 
-    public CurrencyService(CurrencyRepository currencyRepository, CurrencyPriceRepository currencyPriceRepository) {
+    public CurrencyService(CurrencyRepository currencyRepository,  CurrencyPriceRepository currencyPriceRepository) {
         this.currencyRepository = currencyRepository;
         this.currencyPriceRepository = currencyPriceRepository;
     }

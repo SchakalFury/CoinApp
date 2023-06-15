@@ -6,7 +6,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-
 public class CoinAppApplication {
 
 	public static void main(String[] args) {

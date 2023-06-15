@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -16,5 +17,5 @@ public interface CurrencyPriceRepository extends JpaRepository<CurrencyPrice, Lo
 
     List<CurrencyPrice> findByCurrencySymbolAndDateWriteBetween(String currencySymbol, LocalDateTime startDate, LocalDateTime endDate);
 
-    int deleteByCreatedAtBefore(LocalDateTime thresholdDate);
+    int deleteByDateWriteBefore(Date thresholdDate);
 }

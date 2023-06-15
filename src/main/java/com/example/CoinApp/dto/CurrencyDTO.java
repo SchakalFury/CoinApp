@@ -1,8 +1,7 @@
 package com.example.CoinApp.dto;
 
 import com.example.CoinApp.models.Currency;
-import com.example.CoinApp.models.CurrencyPrice;
-import com.example.CoinApp.models.User;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
