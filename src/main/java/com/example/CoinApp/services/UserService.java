@@ -1,7 +1,6 @@
 package com.example.CoinApp.services;
 
 import com.example.CoinApp.dto.UserDTO;
-import com.example.CoinApp.models.Currency;
 import com.example.CoinApp.models.User;
 import com.example.CoinApp.models.UserRole;
 import com.example.CoinApp.repositories.UserRepository;
@@ -10,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +26,7 @@ public class UserService {
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
     private UserValidator userValidator;
     private final UserRepository userRepository;
+
 
     @Autowired
     public UserService(UserRepository userRepository, UserValidator userValidator) {
@@ -51,6 +52,8 @@ public class UserService {
         userValidator.validateEmail(userDTO.getEmail());
         userValidator.validatePassword(userDTO.getPassword(), userDTO.getUsername());
         userValidator.validateCountryOfResidence(userDTO.getCountryOfResidence());
+        userDTO.setUserRole(UserRole.USER);
+        userDTO.setRegistrationDate(LocalDate.now());
 
         if (userDTO.getCurrencies() == null) {
             userDTO.setCurrencies(new ArrayList<>());
@@ -126,5 +129,12 @@ public class UserService {
                     .map(UserDTO::fromEntity)
                     .collect(Collectors.toList());
         }
+
+
+    public Optional<UserDTO> findByUsername(String username) {
+        UserDTO user = new UserDTO();
+        user = UserDTO.fromEntity(userRepository.findByUsername(username));
+        return Optional.ofNullable(user);
     }
+}
 

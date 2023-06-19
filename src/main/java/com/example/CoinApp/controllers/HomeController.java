@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 
 @Controller
+
 public class HomeController {
     private final CurrencyService currencyService;
     @Autowired
@@ -21,6 +22,11 @@ public class HomeController {
         List<String> currencySymbols = currencyService.getAllCurrencySymbols();
         model.addAttribute("currencies", currencySymbols);
         return "index";
+    }
+
+    @GetMapping("/about")
+    public String aboutUs(Model model) {
+        return "about";
     }
 
 }

@@ -1,8 +1,10 @@
 package com.example.CoinApp.repositories;
 
+import com.example.CoinApp.dto.UserDTO;
 import com.example.CoinApp.models.User;
 import com.example.CoinApp.models.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -15,4 +17,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByCountryOfResidence(String country);
     List<User> findByUsernameContainingIgnoreCase(String username);
     List<User> findByUsernameOrEmailContainingIgnoreCase(String username, String email);
+
+
+
+
+    User findByUsername(String userName);
 }
